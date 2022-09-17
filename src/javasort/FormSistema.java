@@ -6,19 +6,16 @@ import javax.swing.table.DefaultTableModel;
 
 public class FormSistema extends javax.swing.JFrame {
     ArrayList<Dados> lista = new ArrayList<>();
-    Comparator<Dados> compareTempMin = 
+    Comparator<Dados> compareNum = 
             (Dados a1, Dados a2) ->
-                    a1.getTemperaturaMinima()- a2.getTemperaturaMinima();
-    Comparator<Dados> compareTempMax = 
+                    a1.getNum()- a2.getNum();
+    Comparator<Dados> compareType = 
             (Dados a1, Dados a2) ->
-                    a1.getTemperaturaMaxima()- a2.getTemperaturaMaxima();
-    Comparator<Dados> compareData = 
+                    a1.getType().compareTo(a2.getType()) ;
+    Comparator<Dados> compareImg = 
             (Dados a1, Dados a2) ->
-                    a1.getData().compareTo(a2.getData());
-    /*
-    Comparator<Dados> comparePrioridade = 
-            (Dados a1, Dados a2) ->
-                    a1.getPrioridade()- a2.getPrioridade();*/
+                    a1.getImg().compareTo(a2.getImg());
+    
     
     public FormSistema() {
         initComponents();
@@ -34,6 +31,7 @@ public class FormSistema extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         lblProx = new javax.swing.JLabel();
+        imagem = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         btnOrdNome = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -47,13 +45,15 @@ public class FormSistema extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setFont(new java.awt.Font("Segoe UI Light", 0, 14)); // NOI18N
 
-        jPanel1.setBackground(new java.awt.Color(204, 255, 204));
+        jPanel1.setBackground(new java.awt.Color(153, 153, 255));
+        jPanel1.setAutoscrolls(true);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\Matheus\\Downloads\\amazonas.png")); // NOI18N
-
+        lblProx.setBackground(new java.awt.Color(0, 0, 0));
         lblProx.setFont(new java.awt.Font("Segoe UI Black", 0, 36)); // NOI18N
         lblProx.setForeground(new java.awt.Color(255, 255, 255));
-        lblProx.setText("Sistema de Informações Climáticas da Amazônia");
+        lblProx.setText("Sistema de cartas tarot");
+
+        imagem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/javasort/tarot.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -63,19 +63,24 @@ public class FormSistema extends javax.swing.JFrame {
                 .addGap(16, 16, 16)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblProx, javax.swing.GroupLayout.PREFERRED_SIZE, 890, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addComponent(lblProx, javax.swing.GroupLayout.PREFERRED_SIZE, 546, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(imagem, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(97, 97, 97))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(53, 53, 53)
                 .addComponent(lblProx, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 295, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(imagem)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
@@ -96,12 +101,22 @@ public class FormSistema extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Data", "Cidade", "Condição", "Tendencia", "Mínima", "Máxima", "Vento Min", "Vento Max", "Direção Vento"
+
             }
         ));
+        tabelaDados.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelaDadosMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tabelaDados);
 
-        cbOrdena.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Data", "Cidade", "Minima", "Máxima", "Vento Min", "Vento Max", " " }));
+        cbOrdena.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Name", "Num", "Type", "Img", " " }));
+        cbOrdena.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbOrdenaActionPerformed(evt);
+            }
+        });
 
         txtBusca.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Dados para busca", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Light", 0, 14))); // NOI18N
 
@@ -167,17 +182,17 @@ public class FormSistema extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(14, 14, 14))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(49, 49, 49)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -185,33 +200,23 @@ public class FormSistema extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     private void carregaArquivo(){
-     String csvFile = "dados_tempo_import.csv";
+     String csvFile = "tarot/cards/tarot-images.csv";
         String line = "";
         String[] leitura = null;
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             while ((line = br.readLine()) != null) {
-                Dados tempo = new Dados();
+                Dados carta = new Dados();
                 leitura = line.split(",");
-                tempo.setData(leitura[0]);
-                tempo.setCidade(leitura[1]);
-                tempo.setCondicao(leitura[2]);
-                tempo.setTemperaturaTendencia(leitura[3]);
-                tempo.setTemperaturaMinima(Integer.parseInt(leitura[4]));
-                tempo.setTemperaturaMaxima(Integer.parseInt(leitura[5]));
-                tempo.setVentoVelocidadeMinima(Integer.parseInt(leitura[6]));
-                tempo.setVentoVelocidadeMaxima(Integer.parseInt(leitura[7]));
-                tempo.setVentoDirecao(leitura[8]);
-                /*System.out.println(leitura[0]+"\n");
+                carta.setName(leitura[0]);
+                carta.setNum(Integer.parseInt(leitura[1]));
+                carta.setType(leitura[3]);
+                carta.setImg(leitura[4]);
+                System.out.println(leitura[0]+"\n");
                 System.out.println(leitura[1]+"\n");
-                System.out.println(leitura[2]+"\n");
                 System.out.println(leitura[3]+"\n");
                 System.out.println(leitura[4]+"\n");
-                System.out.println(leitura[5]+"\n");
-                System.out.println(leitura[6]+"\n");
-                System.out.println(leitura[7]+"\n");
                 
-                System.out.println(leitura[8]+"\n");*/
-                lista.add(tempo); 
+                lista.add(carta); 
             }// fim percurso no arquivo
             mostra();
         } catch (IOException e) {
@@ -221,25 +226,18 @@ public class FormSistema extends javax.swing.JFrame {
     //https://1bestcsharp.blogspot.com/2016/03/java-populate-jtable-from-arraylist.html
     void mostra(){
         //limpando a tabela
-        tabelaDados.setModel(new DefaultTableModel(null,new String[]{"Data","Cidade","Condição","Tendencia","Máxima","Minima","Vento Max", "Vento Min", "Direção"}));
-       
-        DefaultTableModel model = 
-                (DefaultTableModel)tabelaDados.getModel();
-        Object rowData[] = new Object[9];// qtd colunas
+        DefaultTableModel model = new DefaultTableModel(null,new String[]{"Name","Num","Type","Img"});
+        Object rowData[] = new Object[4];// qtd colunas
         for(Dados d: lista)
         {
-            rowData[0] = d.getData();
-            rowData[1] = d.getCidade();
-            rowData[2] = d.getCondicao();
-            rowData[3] = d.getTemperaturaTendencia();
-            rowData[4] = d.getTemperaturaMinima();
-            rowData[5] = d.getTemperaturaMaxima();
-            rowData[6] = d.getVentoVelocidadeMinima();
-            rowData[7] = d.getVentoVelocidadeMaxima();
-            rowData[8] = d.getVentoDirecao();
-            System.out.println("TempMin:"+d.getTemperaturaMinima()+"\n");
+            rowData[0] = d.getName();
+            rowData[1] = d.getNum();
+            rowData[2] = d.getType();
+            rowData[3] = d.getImg();
+           
             model.addRow(rowData);
         }// fim preenche modelo
+        tabelaDados.setModel(model);
     }// fim mostra
    
     
@@ -248,13 +246,14 @@ public class FormSistema extends javax.swing.JFrame {
     
     private void btnOrdNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrdNomeActionPerformed
     switch(cbOrdena.getSelectedIndex()){    
-        case 0: lista.sort(compareData);
+        case 0: Collections.sort(lista);
             break;
-        case 1: Collections.sort(lista);
+        case 1: lista.sort(compareNum);
             break;
-        case 2: lista.sort(compareTempMin);
+        case 2: lista.sort(compareType);
             break;
-        default: JOptionPane.showMessageDialog(null,"Em construção!");    
+        case 3: lista.sort(compareImg);
+            break;
         }    
         mostra();
     }//GEN-LAST:event_btnOrdNomeActionPerformed
@@ -262,30 +261,50 @@ public class FormSistema extends javax.swing.JFrame {
     private void btnBuscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscaActionPerformed
        int cont=0;
         switch(cbOrdena.getSelectedIndex()){    
-        case 0: 
-            break;
-        case 1:  if(opSeq.isSelected()){
+        case 0:  if(opSeq.isSelected()){
                     for(Dados d: lista){
                         cont++;
-                        if(d.getCidade().equals(txtBusca.getText())){
-                          JOptionPane.showMessageDialog(null,"Cidade encontrada "+cont+" comparações");  
+                        if(d.getName().equals(txtBusca.getText())) {
+                          JOptionPane.showMessageDialog(null,"Nome encontrado "+cont+" comparações");  
                             break;
                         }      
                     }
                 }// fim if Sequencial;
                 else{
                   Dados d = new Dados();
-                  d.setCidade(txtBusca.getText()); // alterar atributo de acordo com a seleção
+                  d.setName(txtBusca.getText()) ; // alterar atributo de acordo com a seleção
                   // definir o comparator caso não seja o padrão na chamado da busca binária
                   int pos = Collections.binarySearch(lista,d); // int pos = Collections.binarySearch(lista,d,compareTempMax);
-                  JOptionPane.showMessageDialog(null,"Cidade encontrada, posicao "+pos);  
+                  JOptionPane.showMessageDialog(null,"Nome encontrado, posicao "+pos);  
                 }// fim else binary
             break;
-        case 2: 
+        case 2: if(opSeq.isSelected()){
+                    for(Dados d: lista){
+                        cont++;
+                        if(d.getType().equals(txtBusca.getText())) {
+                          JOptionPane.showMessageDialog(null,"Tipo encontrado "+cont+" comparações");  
+                            break;
+                        }      
+                    }
+                }// fim if Sequencial;
+                else{
+                  Dados d = new Dados();
+                  d.setType(txtBusca.getText()) ; // alterar atributo de acordo com a seleção
+                  // definir o comparator caso não seja o padrão na chamado da busca binária
+                  int pos = Collections.binarySearch(lista,d,compareType); // int pos = Collections.binarySearch(lista,d,compareTempMax);
+                  JOptionPane.showMessageDialog(null,"Tipo encontrado, posicao "+pos);  
+                }// fim else binary
             break;
         default: JOptionPane.showMessageDialog(null,"Em construção!");              
         }// switch
     }//GEN-LAST:event_btnBuscaActionPerformed
+
+    private void tabelaDadosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaDadosMouseClicked
+    }//GEN-LAST:event_tabelaDadosMouseClicked
+
+    private void cbOrdenaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbOrdenaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbOrdenaActionPerformed
     
     /**
      * @param args the command line arguments
@@ -328,6 +347,7 @@ public class FormSistema extends javax.swing.JFrame {
     private javax.swing.JButton btnOrdNome;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox<String> cbOrdena;
+    private javax.swing.JLabel imagem;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
