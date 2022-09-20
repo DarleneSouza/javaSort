@@ -2,6 +2,6 @@
 
 |linguagem|ide|S.O.
 |---|---|---|
-|c|Netbens|windows
+|java|Netbens|windows
 
-#### trabalho de ordenação, busca binaria e sequencial desenvolvidos em java.
+#### trabalho de ordenação com busca binaria e sequencial.
