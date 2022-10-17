@@ -101,7 +101,7 @@ public class FormSistema extends javax.swing.JFrame {
 
             },
             new String [] {
-
+                "Nome", "Número", "Tipo", "Imagem"
             }
         ));
         tabelaDados.addMouseListener(new java.awt.event.MouseAdapter() {
