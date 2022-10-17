@@ -6,4 +6,4 @@
 |java|Netbens|windows
 
 ## Sistema funcionando
-![captura do sistema](./print.png)
+![captura do sistema](./capturaJavaSort.png)
